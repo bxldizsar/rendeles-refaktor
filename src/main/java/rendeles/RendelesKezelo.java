@@ -7,12 +7,14 @@ public class RendelesKezelo
     private final RendelesValidator validator;
     private final List<KedvezmenySzabaly> szabalyok;
     private final RendelesTar tar;
+    private final Ertesito ertesito;
 
-    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar)
+    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar, Ertesito ertesito)
     {
         this.validator = validator;
         this.szabalyok = List.copyOf(szabalyok);
         this.tar = tar;
+        this.ertesito = ertesito;
     }
 
     public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus)
@@ -28,7 +30,7 @@ public class RendelesKezelo
         osszeg = kedvezmenytAd(osszeg, rendeles);
 
         tar.ment(rendeles, osszeg);
-        ertesit(email);
+        ertesito.ertesit(rendeles);
         return szamlatKeszit(termekek, arak, osszeg);
     }
 
@@ -50,11 +52,6 @@ public class RendelesKezelo
             osszeg = szabaly.alkalmaz(osszeg, rendeles);
         }
         return osszeg;
-    }
-
-    private void ertesit(String email)
-    {
-        System.out.println("EMAIL -> " + email + ": Koszonjuk a rendelest!");
     }
 
     private String szamlatKeszit(List<String> termekek, List<Double> arak, double osszeg)
