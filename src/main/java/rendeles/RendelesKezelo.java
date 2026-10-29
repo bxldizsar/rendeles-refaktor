@@ -8,13 +8,16 @@ public class RendelesKezelo
     private final List<KedvezmenySzabaly> szabalyok;
     private final RendelesTar tar;
     private final Ertesito ertesito;
+    private final SzamlaFormazo formazo;
 
-    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar, Ertesito ertesito)
+    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar, Ertesito ertesito,
+            SzamlaFormazo formazo)
     {
         this.validator = validator;
         this.szabalyok = List.copyOf(szabalyok);
         this.tar = tar;
         this.ertesito = ertesito;
+        this.formazo = formazo;
     }
 
     public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus)
@@ -31,7 +34,7 @@ public class RendelesKezelo
 
         tar.ment(rendeles, osszeg);
         ertesito.ertesit(rendeles);
-        return szamlatKeszit(termekek, arak, osszeg);
+        return formazo.formaz(rendeles, osszeg);
     }
 
     private double osszegez(List<String> termekek, List<Double> arak)
@@ -52,16 +55,5 @@ public class RendelesKezelo
             osszeg = szabaly.alkalmaz(osszeg, rendeles);
         }
         return osszeg;
-    }
-
-    private String szamlatKeszit(List<String> termekek, List<Double> arak, double osszeg)
-    {
-        StringBuilder sb = new StringBuilder("SZAMLA\n");
-        for(int i = 0; i < termekek.size(); i++)
-        {
-            sb.append(termekek.get(i)).append(" ").append(arak.get(i)).append("\n");
-        }
-        sb.append("Osszesen: ").append(String.format("%.2f", osszeg));
-        return sb.toString();
     }
 }

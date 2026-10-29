@@ -43,7 +43,7 @@ public class RendelesKezeloJellemzoTest
     {
         List<KedvezmenySzabaly> szabalyok = List.of(new VipKedvezmeny(), new DiakKedvezmeny(), new NagyRendelesKedvezmeny());
         tar = new KonzolosTar(System.out);
-        return new RendelesKezelo(new AlapValidator(), szabalyok, tar, new EmailErtesito(System.out));
+        return new RendelesKezelo(new AlapValidator(), szabalyok, tar, new EmailErtesito(System.out), new SzovegesSzamla());
     }
 
     private double bevetel(RendelesKezelo k)

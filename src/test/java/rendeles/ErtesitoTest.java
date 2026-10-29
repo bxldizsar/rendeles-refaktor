@@ -19,7 +19,7 @@ public class ErtesitoTest
     private RendelesKezelo kezelo()
     {
         RendelesTar tar = new KonzolosTar(new PrintStream(new ByteArrayOutputStream()));
-        return new RendelesKezelo(new AlapValidator(), List.of(), tar, ertesito);
+        return new RendelesKezelo(new AlapValidator(), List.of(), tar, ertesito, new SzovegesSzamla());
     }
 
     @Test
