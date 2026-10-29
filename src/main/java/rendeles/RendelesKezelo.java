@@ -4,13 +4,15 @@ import java.util.List;
 
 public class RendelesKezelo
 {
-    public static double osszesBevetel = 0;
-
     private final RendelesValidator validator;
+    private final List<KedvezmenySzabaly> szabalyok;
+    private final RendelesTar tar;
 
-    public RendelesKezelo(RendelesValidator validator)
+    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar)
     {
         this.validator = validator;
+        this.szabalyok = List.copyOf(szabalyok);
+        this.tar = tar;
     }
 
     public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus)
@@ -21,10 +23,11 @@ public class RendelesKezelo
             return hiba;
         }
 
+        Rendeles rendeles = new Rendeles(vevo, email, termekek, arak, tipus);
         double osszeg = osszegez(termekek, arak);
-        osszeg = kedvezmenytAd(osszeg, tipus);
+        osszeg = kedvezmenytAd(osszeg, rendeles);
 
-        ment(vevo, osszeg);
+        tar.ment(rendeles, osszeg);
         ertesit(email);
         return szamlatKeszit(termekek, arak, osszeg);
     }
@@ -39,27 +42,14 @@ public class RendelesKezelo
         return osszeg;
     }
 
-    private double kedvezmenytAd(double osszeg, String tipus)
+    // a szabalyok a megadott sorrendben futnak
+    private double kedvezmenytAd(double osszeg, Rendeles rendeles)
     {
-        if(tipus.equals("VIP"))
+        for(KedvezmenySzabaly szabaly : szabalyok)
         {
-            osszeg = osszeg * 0.9;
-        }
-        else if(tipus.equals("DIAK"))
-        {
-            osszeg = osszeg * 0.95;
-        }
-        if(osszeg > 500)
-        {
-            osszeg -= 20;
+            osszeg = szabaly.alkalmaz(osszeg, rendeles);
         }
         return osszeg;
-    }
-
-    private void ment(String vevo, double osszeg)
-    {
-        System.out.println("DB INSERT rendeles " + vevo + " " + osszeg);
-        osszesBevetel += osszeg;
     }
 
     private void ertesit(String email)
