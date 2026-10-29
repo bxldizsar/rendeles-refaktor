@@ -8,19 +8,25 @@ public class RendelesKezelo
     private final List<KedvezmenySzabaly> szabalyok;
     private final RendelesTar tar;
     private final Ertesito ertesito;
-    private final SzamlaFormazo formazo;
+    private final SzamlaFormazo szamlaFormazo;
 
-    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar, Ertesito ertesito,
-            SzamlaFormazo formazo)
+    public RendelesKezelo(RendelesValidator validator, List<KedvezmenySzabaly> szabalyok, RendelesTar tar,
+            Ertesito ertesito, SzamlaFormazo szamlaFormazo)
     {
         this.validator = validator;
         this.szabalyok = List.copyOf(szabalyok);
         this.tar = tar;
         this.ertesito = ertesito;
-        this.formazo = formazo;
+        this.szamlaFormazo = szamlaFormazo;
     }
 
     public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus)
+    {
+        return feldolgoz(vevo, email, termekek, arak, tipus, null);
+    }
+
+    public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus,
+            String kupon)
     {
         String hiba = validator.ellenoriz(vevo, email);
         if(hiba != null)
@@ -28,13 +34,13 @@ public class RendelesKezelo
             return hiba;
         }
 
-        Rendeles rendeles = new Rendeles(vevo, email, termekek, arak, tipus);
+        Rendeles rendeles = new Rendeles(vevo, email, termekek, arak, tipus, kupon);
         double osszeg = osszegez(termekek, arak);
         osszeg = kedvezmenytAd(osszeg, rendeles);
 
         tar.ment(rendeles, osszeg);
         ertesito.ertesit(rendeles);
-        return formazo.formaz(rendeles, osszeg);
+        return szamlaFormazo.formaz(rendeles, osszeg);
     }
 
     private double osszegez(List<String> termekek, List<Double> arak)
