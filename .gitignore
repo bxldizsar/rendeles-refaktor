@@ -5,3 +5,4 @@ nbproject/private/
 nbactions.xml
 nb-configuration.xml
 *.class
+/nbproject/
