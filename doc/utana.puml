@@ -1,0 +1,74 @@
+@startuml
+!pragma layout smetana
+title Utana: felelossegek interfeszek mogott
+skinparam classAttributeIconSize 0
+hide empty members
+
+class RendelesKezelo {
+  - szabalyok : List<KedvezmenySzabaly>
+  + feldolgoz(vevo, email, termekek, arak, tipus) : String
+  + feldolgoz(vevo, email, termekek, arak, tipus, kupon) : String
+}
+
+class Rendeles <<record>> {
+  + vevo : String
+  + email : String
+  + termekek : List<String>
+  + arak : List<Double>
+  + tipus : String
+  + kupon : String
+}
+
+interface RendelesValidator {
+  + ellenoriz(vevo, email) : String
+}
+class AlapValidator
+
+interface KedvezmenySzabaly {
+  + alkalmaz(osszeg : double, r : Rendeles) : double
+}
+class VipKedvezmeny
+class DiakKedvezmeny
+class NagyRendelesKedvezmeny
+class KuponKedvezmeny {
+  - kod : String
+  - levonas : double
+}
+
+interface RendelesTar {
+  + ment(r : Rendeles, osszeg : double)
+  + osszesBevetel() : double
+}
+class KonzolosTar {
+  - ki : PrintStream
+  - osszesBevetel : double
+}
+
+interface Ertesito {
+  + ertesit(r : Rendeles)
+}
+class EmailErtesito
+class SmsErtesito
+
+interface SzamlaFormazo {
+  + formaz(r : Rendeles, osszeg : double) : String
+}
+class SzovegesSzamla
+
+RendelesKezelo --> RendelesValidator
+RendelesKezelo --> "*" KedvezmenySzabaly
+RendelesKezelo --> RendelesTar
+RendelesKezelo --> Ertesito
+RendelesKezelo --> SzamlaFormazo
+RendelesKezelo ..> Rendeles : letrehozza
+
+AlapValidator ..|> RendelesValidator
+VipKedvezmeny ..|> KedvezmenySzabaly
+DiakKedvezmeny ..|> KedvezmenySzabaly
+NagyRendelesKedvezmeny ..|> KedvezmenySzabaly
+KuponKedvezmeny ..|> KedvezmenySzabaly
+KonzolosTar ..|> RendelesTar
+EmailErtesito ..|> Ertesito
+SmsErtesito ..|> Ertesito
+SzovegesSzamla ..|> SzamlaFormazo
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+!pragma layout smetana
+title Elotte: a God class
+skinparam classAttributeIconSize 0
+hide empty members
+
+class RendelesKezelo {
+  + {static} osszesBevetel : double
+  + feldolgoz(vevo : String, email : String, termekek : List<String>, arak : List<Double>, tipus : String) : String
+}
+
+note right of RendelesKezelo
+  egyetlen metodusban:
+  - validalas
+  - osszegzes
+  - VIP / DIAK kedvezmeny (if-else)
+  - 500 feletti levonas
+  - DB INSERT (System.out)
+  - EMAIL (System.out)
+  - bevetel (static)
+  - szamla formazasa
+end note
+@enduml
