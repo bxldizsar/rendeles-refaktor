@@ -6,23 +6,41 @@ public class RendelesKezelo
 {
     public static double osszesBevetel = 0;
 
+    private final RendelesValidator validator;
+
+    public RendelesKezelo(RendelesValidator validator)
+    {
+        this.validator = validator;
+    }
+
     public String feldolgoz(String vevo, String email, List<String> termekek, List<Double> arak, String tipus)
     {
-        if(vevo == null || vevo.isEmpty())
+        String hiba = validator.ellenoriz(vevo, email);
+        if(hiba != null)
         {
-            return "HIBA: vevo";
-        }
-        if(!email.contains("@"))
-        {
-            return "HIBA: email";
+            return hiba;
         }
 
+        double osszeg = osszegez(termekek, arak);
+        osszeg = kedvezmenytAd(osszeg, tipus);
+
+        ment(vevo, osszeg);
+        ertesit(email);
+        return szamlatKeszit(termekek, arak, osszeg);
+    }
+
+    private double osszegez(List<String> termekek, List<Double> arak)
+    {
         double osszeg = 0;
         for(int i = 0; i < termekek.size(); i++)
         {
             osszeg += arak.get(i);
         }
+        return osszeg;
+    }
 
+    private double kedvezmenytAd(double osszeg, String tipus)
+    {
         if(tipus.equals("VIP"))
         {
             osszeg = osszeg * 0.9;
@@ -35,11 +53,22 @@ public class RendelesKezelo
         {
             osszeg -= 20;
         }
+        return osszeg;
+    }
 
+    private void ment(String vevo, double osszeg)
+    {
         System.out.println("DB INSERT rendeles " + vevo + " " + osszeg);
-        System.out.println("EMAIL -> " + email + ": Koszonjuk a rendelest!");
         osszesBevetel += osszeg;
+    }
 
+    private void ertesit(String email)
+    {
+        System.out.println("EMAIL -> " + email + ": Koszonjuk a rendelest!");
+    }
+
+    private String szamlatKeszit(List<String> termekek, List<Double> arak, double osszeg)
+    {
         StringBuilder sb = new StringBuilder("SZAMLA\n");
         for(int i = 0; i < termekek.size(); i++)
         {

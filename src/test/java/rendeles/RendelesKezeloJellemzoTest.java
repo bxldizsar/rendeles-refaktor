@@ -41,7 +41,7 @@ public class RendelesKezeloJellemzoTest
     // a refaktor soran csak ez a ket metodus valtozhat
     private RendelesKezelo kezelo()
     {
-        return new RendelesKezelo();
+        return new RendelesKezelo(new AlapValidator());
     }
 
     private double bevetel(RendelesKezelo k)
